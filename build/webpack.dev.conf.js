@@ -20,6 +20,7 @@ var ratings = appData.ratings
 
 var apiRoutes = express.Router()
 app.use('/api',apiRoutes)
+//以上通过express导入路由
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -75,6 +76,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         })
       })
     }
+    //以上找到devServer对象并在其后添加相关路由设置
   },
   plugins: [
     new webpack.DefinePlugin({

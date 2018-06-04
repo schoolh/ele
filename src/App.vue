@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <v-header></v-header>
-    <div class="tab border-1px">
+    <v-header :seller="seller"></v-header>
+    <!-- 添加border-1px类，使1px边框样式生效，见mixin.scss中定义的边框和base.scss中将边框根据DPR缩放 -->
+    <div class="tab border-1px"> 
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
       </div>
@@ -17,35 +18,34 @@
 </template>
 
 <script>
-import Header from './components/header/header.vue'
+import VHeader from './components/header/header.vue'
 // icon.scss只能在script标签中引入，文件中包含url，如果在style标签中引入，
 // 会找不到url中的资源，需要将icon.scss中的url修改成
 // 相对于app.vue的路径：./assets/fonts/......才能找到url中的资源
 import './assets/scss/index.scss'
-import Http from './tools/http'
+// import Http from './tools/http'
 const ERR_OK = 0
 
 export default {
   name: 'App',
-  data () {
+  data() {
     return {
       seller: {}
     }
   },
-  created () {
-    Http
-      .get('/seller')
+  created() {
+    this.$http.get('/seller')
       .then(res => {
-        console.log(res)
+        // console.log(res)
         res = res.data
         if (res.errno === ERR_OK) {
           this.seller = res.data
-          console.log(this.seller)
+          // console.log(this.seller)
         }
       })
   },
   components: {
-    'v-header': Header
+    VHeader
   }
 }
 </script>
@@ -53,7 +53,6 @@ export default {
 <style lang="scss">
 //mixin.scss只能在style标签中引入，如果在script标签中import，会报错找不到它。
 @import './assets/scss/mixin.scss';
-
 #app {
   .tab {
     display: flex;
