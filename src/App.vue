@@ -2,7 +2,7 @@
   <div id="app">
     <v-header :seller="seller"></v-header>
     <!-- 添加border-1px类，使1px边框样式生效，见mixin.scss中定义的边框和base.scss中将边框根据DPR缩放 -->
-    <div class="tab border-1px"> 
+    <div class="tab border-1px">
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
       </div>
@@ -13,7 +13,7 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view/>
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 
@@ -28,6 +28,9 @@ const ERR_OK = 0
 
 export default {
   name: 'App',
+  components: {
+    VHeader
+  },
   data() {
     return {
       seller: {}
@@ -43,9 +46,6 @@ export default {
           // console.log(this.seller)
         }
       })
-  },
-  components: {
-    VHeader
   }
 }
 </script>

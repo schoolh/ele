@@ -3,7 +3,7 @@
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
         <li v-for="(item, index) in goods" :key="index" class="menu-item"
-        :class="{'current': currentIndex === index}" @click="selectMenu(index)">
+        :class="{'current': currentIndex === index}" @click="selectMenu(index, $event)">
           <span class="menu-text border-1px">
             <span v-if="item.type >= 0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -21,11 +21,14 @@
                 <h2>{{item.name}}</h2>
                 <p v-show="item.description" class="desc">{{item.description}}</p>
                 <p class="extra">
-                  <span class="count">月售{{item.sellCount}}</span><span>好评率{{item.rating}}%</span>
+                  <span class="count">月售{{item.sellCount}}份</span><span>好评率{{item.rating}}%</span>
                 </p>
                 <div class="price">
                   <span class="now">&yen;{{item.price}}</span>
                   <span v-if="item.oldPrice" class="old">&yen;{{item.oldPrice}}</span>
+                </div>
+                <div class="cart-control-wrapper">
+                  <CartControl :food="item"></CartControl>
                 </div>
               </div>
             </li>
@@ -33,15 +36,28 @@
         </li>
       </ul>
     </div>
+    <ShopCart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
+    :minPrice="seller.minPrice"></ShopCart>
   </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
+import CartControl from './CartControl'
+import ShopCart from './ShopCart'
 
 const ERR_OK = 0
 
 export default {
+  components: {
+    CartControl,
+    ShopCart
+  },
+  props: {
+    seller: {
+      type: Object
+    }
+  },
   data() {
     return {
       goods: [],
@@ -61,6 +77,17 @@ export default {
         }
       }
       return 0
+    },
+    selectFoods() {
+      let foods = []
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count > 0) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   },
   created() {
@@ -101,7 +128,7 @@ export default {
       }
     },
     // 点击menu-item后执行的函数
-    selectMenu(index) {
+    selectMenu(index, event) {
       // better-scroll会将点击事件去掉，如果滚动部分需要有点击事件，需要在参数里加上click：true。
       // 同时，在PC上或某些手机端，由于未成功将touchend事件move掉，点击事件会执行两次。
       // better-scroll派发的event事件和原生js的event有属性上的区别，其中有一个属性为event._constructed。better-scroll派发的事件中event._constructed为true，原生点击事件中没有这个属性。
@@ -191,6 +218,7 @@ export default {
     }
     .food-item {
       display: flex;
+      position: relative;
       margin: 18px 18px 0;
       padding-bottom: 18px;
       @include border-1px(rgba(7, 17, 27, 0.1));
@@ -204,6 +232,7 @@ export default {
         height: 57px;
       }
       .content {
+        flex: 1;
         h2 {
           margin: 2px 0 8px;
           font-size: 14px;
@@ -237,6 +266,11 @@ export default {
             font-size: 10px;
             color: rgb(147, 153, 159);
           }
+        }
+        .cart-control-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 12px;
         }
       }
     }
