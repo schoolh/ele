@@ -1,7 +1,7 @@
 <template>
   <div class="cart-control">
     <transition name="move">
-      <div v-show="food.count > 0" class="cart-decrease" @click="decreaseCart">
+      <div v-show="food.count > 0" class="cart-decrease" @click.stop="decreaseCart">
         <!-- 这里加一个inner是为了添加rotate动效，因为使用vue的进入/离开过渡时，
         同时过渡translate和rotate，只会生效一个，所以这里只使用vue的transition来过渡translate效果，
         inner的rotate效果相当于是使用css3的transition。 -->
@@ -9,7 +9,7 @@
       </div>
     </transition>
     <div v-show="food.count > 0" class="cart-count">{{food.count}}</div>
-    <div class="cart-increase icon-add_circle" @click="increaseCart"></div>
+    <div class="cart-increase icon-add_circle" @click.stop="increaseCart"></div>
   </div>
 </template>
 
@@ -34,6 +34,7 @@ export default {
       } else {
         this.food.count++
       }
+      this.$emit('add', event.target)
     },
     decreaseCart() {
       this.food.count--

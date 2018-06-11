@@ -11,11 +11,12 @@
       </ul>
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
+    <!-- 使用better-scroll需要给要滑动的元素添加一个容器，因为BScroll只对容器元素的第一个子元素生效 -->
       <ul>
         <li v-for="(item, index) in goods" :key="index" class="food-list" ref="foodList">
           <h1 class="type">{{item.name}}</h1>
           <ul>
-            <li v-for="(item, index) in item.foods" :key="index" class="food-item border-1px">
+            <li v-for="(item, index) in item.foods" :key="index" class="food-item border-1px" @click="selectFood(item)">
               <img :src="item.icon">
               <div class="content">
                 <h2>{{item.name}}</h2>
@@ -28,7 +29,7 @@
                   <span v-if="item.oldPrice" class="old">&yen;{{item.oldPrice}}</span>
                 </div>
                 <div class="cart-control-wrapper">
-                  <CartControl :food="item"></CartControl>
+                  <CartControl :food="item" @add="addFood"></CartControl>
                 </div>
               </div>
             </li>
@@ -36,8 +37,9 @@
         </li>
       </ul>
     </div>
+    <Food :food="selectedFood" ref="food"></Food>
     <ShopCart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
-    :minPrice="seller.minPrice"></ShopCart>
+    :minPrice="seller.minPrice" ref="shopCart"></ShopCart>
   </div>
 </template>
 
@@ -45,13 +47,15 @@
 import BScroll from 'better-scroll'
 import CartControl from './CartControl'
 import ShopCart from './ShopCart'
+import Food from './Food'
 
 const ERR_OK = 0
 
 export default {
   components: {
     CartControl,
-    ShopCart
+    ShopCart,
+    Food
   },
   props: {
     seller: {
@@ -63,7 +67,8 @@ export default {
       goods: [],
       classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
       scrollY: 0,
-      listHeight: [] // 记录依次累加food-list的高度
+      listHeight: [], // 记录依次累加food-list的高度
+      selectedFood: {}
     }
   },
   computed: {
@@ -138,6 +143,19 @@ export default {
       let foodList = this.$refs.foodList
       let el = foodList[index]
       this.foodsScroll.scrollToElement(el, 300)
+    },
+    _drop(target) {
+      // 体验优化，异步执行下落动画
+      this.$nextTick(
+        this.$refs.shopCart.drop(target)
+      )
+    },
+    addFood(target) {
+      this._drop(target)
+    },
+    selectFood(food) {
+      this.selectedFood = food
+      this.$refs.food.show()
     }
   }
 }
