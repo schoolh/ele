@@ -33,19 +33,44 @@
             </p>
           </div>
         </div>
-        <div class="rating"></div>
+        <div class="ratings">
+          <div class="header">
+            <h1 class="title">商品评价</h1>
+            <RatingSelect :ratings="food.ratings" :desc="desc" :selectType="selectType" :onlyContent="onlyContent"
+            @select="selectRating" @toggle="toggleContent"></RatingSelect>
+          </div>
+          <div>
+            <ul>
+              <li v-for="(rating, index) in food.ratings" :key="index">
+                <div class="user">
+                  <span>{{rating.username}}</span>
+                  <img :src="rating.avatar">
+                </div>
+                <div class="time"></div>
+                <p class="text">
+                  <i :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></i>
+                  {{rating.text}}
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </transition>
 </template>
 
 <script>
-import CartControl from './CartControl'
 import BScroll from 'better-scroll'
+import CartControl from './CartControl'
+import RatingSelect from './RatingSelect'
+
+const ALL = 2
 
 export default {
   components: {
-    CartControl
+    CartControl,
+    RatingSelect
   },
   props: {
     food: {
@@ -54,12 +79,21 @@ export default {
   },
   data() {
     return {
-      showFlag: false
+      showFlag: false,
+      desc: {
+        all: '全部',
+        positive: '推荐',
+        negative: '吐槽'
+      },
+      selectType: ALL,
+      onlyContent: true
     }
   },
   methods: {
     show() {
       this.showFlag = true
+      this.selectType = ALL
+      this.onlyContent = true
       // 使用better-scroll需要给要滑动的元素添加一个容器，
       // 因为BScroll只对容器元素的第一个子元素生效
       this.$nextTick(() => {
@@ -72,6 +106,12 @@ export default {
     },
     hide() {
       this.showFlag = false
+    },
+    selectRating(type) {
+      this.selectType = type
+    },
+    toggleContent() {
+      this.onlyContent = !this.onlyContent
     }
   }
 }
@@ -178,6 +218,22 @@ export default {
         line-height: 24px;
         font-size: 12px;
         color: rgb(77, 85, 93);
+      }
+    }
+  }
+  .ratings {
+    padding-top: 16px;
+    border-top: 1px solid rgba(7, 17, 27, 0.1);
+    background: #f3f5f7;
+    .header {
+      padding: 18px 18px 0;
+      border-top: 1px solid rgba(7, 17, 27, 0.1);
+      border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+      background: #fff;
+      .title {
+        line-height: 14px;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
       }
     }
   }
