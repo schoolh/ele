@@ -1,3 +1,5 @@
+<!--这是我的方法实现的ShopCart组件，与源码的区别是在点击+按钮时的小球效果实现，
+我不用dropBalls数组来存储要用来做效果的小球，而是直接用index来获取-->
 <template>
   <div class="shop-cart">
     <div class="content" @click="toggleList">
@@ -39,7 +41,8 @@
     <div class="ball-container">
       <div v-for="(ball, index) in balls" :key="index">
         <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
-          <div v-show="ball.show" class="ball">
+          <div v-show="ball.show" class="ball" :index="index">
+            <!-- 上面将index赋给属性，为了在这个小球显示时，在beforeDrop函数中用index来获取balls数组中这个小球对应的el的位置 -->
             <div class="inner"></div>
           </div>
         </transition>
@@ -175,7 +178,7 @@ export default {
         if (!ball.show) {
           ball.show = true
           ball.el = el // ？？？？这里不需要用Vue.set来设置吗？
-          this.dropBalls.push(ball) // 也可以不用专门用dropBalls来存储将要transition进入的小球，见我的方法实现：ShopCartCopy.vue
+          // this.dropBalls.push(ball) 这是源码用的方法，我的方法因为在小球的元素中将index赋给了属性，所以不需要这样了
           return
         }
       }
@@ -184,9 +187,11 @@ export default {
       this.drop(target)
     },
     beforeDrop(el) {
-      let count = this.dropBalls.length
-      let ball = this.dropBalls[count - 1]
-      let rect = ball.el.getBoundingClientRect()
+      // let count = this.dropBalls.length
+      // let ball = this.dropBalls[count - 1]
+      // let rect = ball.el.getBoundingClientRect()
+      let index = el.getAttribute('index') // 这是我的方法，取出index属性值，就能用下面这个获取到balls中要显示的小球对应的el
+      let rect = this.balls[index].el.getBoundingClientRect()
       let x = rect.left - 32
       let y = -(window.innerHeight - rect.top - 22)
       el.style.display = ''
@@ -210,8 +215,10 @@ export default {
       })
     },
     afterDrop(el) {
-      let ball = this.dropBalls.shift()
-      ball.show = false
+      // let ball = this.dropBalls.shift()
+      // ball.show = false
+      let index = el.getAttribute('index')
+      this.balls[index].show = false
       el.style.display = 'none' // 因为设置了transition过渡，所以当上一步ball.show=false时，小球不会马上消失，
       // 会等transition中设置的过渡时间之后消失，所以手动让小球display:none
     }

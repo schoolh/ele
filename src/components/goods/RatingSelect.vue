@@ -1,11 +1,11 @@
 <template>
   <div class="rating-select">
     <div class="rating-type border-1px">
-      <span class="block positive" :class="{'active': selectType === 2}" @click="select(2, $event)">{{desc.all}}<span
+      <span class="block positive" :class="{'active': selectType === 2}" @click="select(2)">{{desc.all}}<span
       class="count">{{ratings.length}}</span></span>
-      <span class="block positive" :class="{'active': selectType === 0}" @click="select(0, $event)">{{desc.positive}}<span
+      <span class="block positive" :class="{'active': selectType === 0}" @click="select(0)">{{desc.positive}}<span
       class="count">{{positives.length}}</span></span>
-      <span class="block negative" :class="{'active': selectType === 1}" @click="select(1, $event)">{{desc.negative}}<span
+      <span class="block negative" :class="{'active': selectType === 1}" @click="select(1)">{{desc.negative}}<span
       class="count">{{negatives.length}}</span></span>
     </div>
     <div class="switch" @click="toggleContent">
@@ -65,7 +65,7 @@ export default {
     }
   },
   methods: {
-    select(type, event) {
+    select(type) {
       this.$emit('select', type)
     },
     toggleContent() {
