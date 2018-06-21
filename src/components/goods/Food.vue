@@ -65,7 +65,7 @@
 import Vue from 'vue'
 import BScroll from 'better-scroll'
 import CartControl from './CartControl'
-import RatingSelect from './RatingSelect'
+import RatingSelect from '../common/RatingSelect'
 import {formatDate} from '../common/date'
 
 const ALL = 2

@@ -71,43 +71,18 @@ export default {
       selectedFood: {}
     }
   },
-  computed: {
-    // 计算滑动foods后scrollY对应listHeight的哪个区间，也就得到对应的menu-item是第几个
-    currentIndex() {
-      for (let i = 0; i < this.listHeight.length; i++) {
-        let height1 = this.listHeight[i]
-        let height2 = this.listHeight[i + 1]
-        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
-          return i
-        }
-      }
-      return 0
-    },
-    selectFoods() {
-      let foods = []
-      this.goods.forEach(good => {
-        good.foods.forEach(food => {
-          if (food.count > 0) {
-            foods.push(food)
-          }
-        })
-      })
-      return foods
-    }
-  },
   created() {
-    this.$http.get('goods')
-      .then(res => {
-        res = res.data
-        if (res.errno === ERR_OK) {
-          this.goods = res.data
-          // 以下是为了在goods改变后，DOM发生改变后再初始化滚动
-          this.$nextTick(() => {
-            this._initScroll()
-            this._calculateHeight()
-          })
-        }
-      })
+    this.$http.get('/goods').then(res => {
+      res = res.data
+      if (res.errno === ERR_OK) {
+        this.goods = res.data
+        // 以下是为了在goods改变后，DOM发生改变后再初始化滚动
+        this.$nextTick(() => {
+          this._initScroll()
+          this._calculateHeight()
+        })
+      }
+    })
   },
   methods: {
     // 使menu和foods都能滑动，使用了better-scroll
@@ -156,6 +131,30 @@ export default {
     selectFood(food) {
       this.selectedFood = food
       this.$refs.food.show()
+    }
+  },
+  computed: {
+    // 计算滑动foods后scrollY对应listHeight的哪个区间，也就得到对应的menu-item是第几个
+    currentIndex() {
+      for (let i = 0; i < this.listHeight.length; i++) {
+        let height1 = this.listHeight[i]
+        let height2 = this.listHeight[i + 1]
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i
+        }
+      }
+      return 0
+    },
+    selectFoods() {
+      let foods = []
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count > 0) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   }
 }

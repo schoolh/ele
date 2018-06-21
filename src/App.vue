@@ -13,11 +13,14 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
+import {urlParse} from './components/common/util'
 import VHeader from './components/header/header.vue'
 // icon.scss只能在script标签中引入，文件中包含url，如果在style标签中引入，
 // 会找不到url中的资源，需要将icon.scss中的url修改成
@@ -33,19 +36,23 @@ export default {
   },
   data() {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          let queryParam = urlParse()
+          return queryParam.id
+        })()
+      }
     }
   },
   created() {
-    this.$http.get('/seller')
-      .then(res => {
-        // console.log(res)
-        res = res.data
-        if (res.errno === ERR_OK) {
-          this.seller = res.data
-          // console.log(this.seller)
-        }
-      })
+    this.$http.get('/seller?id=' + this.seller.id).then(res => {
+      // console.log(res)
+      res = res.data
+      if (res.errno === ERR_OK) {
+        this.seller = Object.assign({}, this.seller, res.data)
+        //  不能这样： Object.assign(this.seller, res.data)
+      }
+    })
   }
 }
 </script>
