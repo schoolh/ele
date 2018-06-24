@@ -190,7 +190,7 @@ export default {
       let x = rect.left - 32
       let y = -(window.innerHeight - rect.top - 22)
       el.style.display = ''
-      el.style.transform = `translate(0,${y}px)`
+      el.style.transform = `translate(0,${y}px)` // 这里`${}`是ES6模板字符串
       let inner = el.getElementsByClassName('inner')[0]
       inner.style.transform = `translate(${x}px, 0)`
     },

@@ -125,6 +125,8 @@ export default {
     //   Vue.set(this.food, 'count', 1)
     // },
     addFood(target) {
+      // 不要在子组件中直接修改父组件传来的值，而是通过emit事件，
+      // 在父组件监听，然后在父组件中修改值，这种做法好
       this.$emit('add', target)
     },
     selectRating(type) {

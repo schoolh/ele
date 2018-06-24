@@ -66,6 +66,7 @@ module.exports = {
     // npm install --save-dev compression-webpack-plugin
     productionGzip: false,
     productionGzipExtensions: ['js', 'css'],
+    port: 9000, //这是自己添加的，在用express自己做一下小型http server的时候用？prod.server.js是自己写的
 
     // Run the build command with an extra argument to
     // View the bundle analyzer report after build finishes:

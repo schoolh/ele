@@ -36,7 +36,7 @@
             {{seller.bulletin}}
           </p>
           <ul class="supports">
-            <li v-for="(item, index) in seller.supports" class="support-item" :key="index">
+            <li v-for="(item, index) in seller.supports" :key="index" class="support-item">
               <i class="icon" :class="classMap[item.type]"></i>
               <span class="text">{{item.description}}</span>
             </li>
@@ -55,7 +55,16 @@
           </div>
         </div>
       </div>
-      <div class="info"></div>
+      <div class="infos-wrapper">
+        <div class="infos">
+          <h1 class="title">商家信息</h1>
+          <ul>
+            <li v-for="(info, index) in seller.infos" :key="index" class="info-item">
+              {{info}}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -312,22 +321,50 @@ export default {
         font-size: 14px;
         color: rgb(7, 17, 27);
       }
-      .pic-list {
+      .pic-list-wrapper {
         width: 100%;
         overflow: hidden;
         white-space: nowrap;
-        .pic-item {
-          display: inline-block;
-          margin-right: 6px;
-          width: 120px;
-          height: 90px;
-          &:last-child {
-            margin-right: 0;
-          }
-          img {
+        .pic-list {
+          font-size: 0;
+          .pic-item {
+            display: inline-block;
+            margin-right: 6px;
             width: 120px;
             height: 90px;
+            &:last-child {
+              margin-right: 0;
+            }
+            img {
+              width: 120px;
+              height: 90px;
+            }
           }
+        }
+      }
+    }
+  }
+  .infos-wrapper {
+    border-top: 1px solid (rgba(7, 17, 27, 0.1));
+    padding-top: 16px;
+    background: #f3f5f7;
+    .infos {
+      border-top: 1px solid (rgba(7, 17, 27, 0.1));
+      padding: 18px 18px 0;
+      background: #fff;
+      .title {
+        padding-bottom: 12px;
+        line-height: 14px;
+        font-size: 14px;
+        @include border-1px(rgba(7, 17, 27, 0.1));
+      }
+      .info-item {
+        padding: 16px 12px;
+        line-height: 16px;
+        font-size: 12px;
+        @include border-1px(rgba(7, 17, 27, 0.1));
+        &:last-child {
+          @include border-none();
         }
       }
     }
